@@ -1,0 +1,45 @@
+{
+  "name": "nodiscnolive",
+  "productName": "NoDiscNoLive",
+  "version": "1.0.0",
+  "description": "Examina discos y volúmenes de Windows y genera informes de diagnóstico en PDF (MAG).",
+  "main": "src/main/main.js",
+  "author": "MAG",
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "test": "node --test test/*.test.js",
+    "build": "node scripts/build.js"
+  },
+  "build": {
+    "appId": "com.mag.nodiscnolive",
+    "productName": "NoDiscNoLive",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "src/**/*",
+      "assets/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ],
+      "icon": "build/icon.ico",
+      "artifactName": "${productName}-${version}-${target}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "perMachine": false
+    }
+  },
+  "devDependencies": {
+    "electron": "^45.2.3",
+    "electron-builder": "^26.18.0"
+  }
+}

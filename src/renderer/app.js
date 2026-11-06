@@ -6,7 +6,30 @@ const COLORS = { cable: '#2f80ed', sucio: '#f2994a', controladora: '#9b51e0', de
 const RCOL = { bajo: '#27ae60', moderado: '#f2c94c', alto: '#f2994a', critico: '#eb5757' };
 const dirtyTxt = d => d === true ? '<span class="bad">Sucio</span>' : d === false ? '<span class="ok">Limpio</span>' : d === 'noperm' ? '<span class="warnc">Requiere admin</span>' : '<span class="muted">?</span>';
 
-const st = { disks: [], sel: null, admin: false, running: false, results: {} };
+const st = { disks: [], sel: null, admin: false, running: false, results: {}, smart: {} };
+const nz = v => (v == null ? '—' : Number(v).toLocaleString('es-AR'));
+function usageHtml(s) {
+  if (!s) return '<p class="muted">Sin datos todavía.</p>';
+  if (!s.available) return `<p class="warnc">${esc(s.error || 'SMART no disponible')}${s.needsAdmin ? ' — requiere administrador.' : ''}</p>`;
+  const h = s.PowerOnHours, dias = h != null ? Math.floor(h / 24) : null, anios = h != null ? (h / 8760).toFixed(1) : null;
+  const items = [
+    ['Horas de uso', h != null ? `${nz(h)} h <span class="muted">(${nz(dias)} días · ${anios} años)</span>` : '—'],
+    ['Encendidos / arranques (start-stop)', nz(s.StartStopCycleCount)],
+    ['Ciclos de carga/descarga de cabezales', nz(s.LoadUnloadCycleCount)],
+    ['Temperatura', s.Temperature != null ? s.Temperature + ' °C' + (s.TemperatureMax ? ` <span class="muted">(máx ${s.TemperatureMax} °C)</span>` : '') : '—'],
+    ['Desgaste (SSD)', s.Wear != null ? s.Wear + ' %' : '—'],
+    ['Errores de lectura (total / sin corregir / corregidos)', `${nz(s.ReadErrorsTotal)} / <b class="${s.ReadErrorsUncorrected ? 'bad' : ''}">${nz(s.ReadErrorsUncorrected)}</b> / ${nz(s.ReadErrorsCorrected)}`],
+    ['Errores de escritura (total / sin corregir)', `${nz(s.WriteErrorsTotal)} / <b class="${s.WriteErrorsUncorrected ? 'bad' : ''}">${nz(s.WriteErrorsUncorrected)}</b>`],
+  ];
+  return `<table>${items.map(([a, b]) => `<tr><th style="width:46%">${a}</th><td>${b}</td></tr>`).join('')}</table>`;
+}
+async function loadUsage(n) {
+  const box = $('#usageBox'); if (!box) return;
+  box.innerHTML = '<p class="muted">Leyendo SMART…' + (st.admin ? '' : ' (puede pedir permiso de administrador)') + '</p>';
+  const s = await ndnl.readSmart(n);
+  st.smart[n] = s;
+  if (st.sel === n && $('#usageBox')) $('#usageBox').innerHTML = usageHtml(s);
+}
 
 // ---- tema
 (function () {
@@ -66,6 +89,7 @@ function renderDetail() {
     <table style="margin-top:8px"><tr><th>Unidad</th><th>Etiqueta</th><th>FS</th><th>Tamaño</th><th>Libre</th><th>Salud</th><th>Bit de suciedad</th></tr>
     ${d.volumes.map(v => `<tr><td>${esc(v.letter)}:</td><td>${esc(v.label || '—')}</td><td>${esc(v.fs || '—')}</td><td>${fmt(v.size)}</td><td>${fmt(v.free)}</td><td class="${healthCls(v.health)}">${esc(v.health || '—')}</td><td>${dirtyTxt(v.dirty)}</td></tr>`).join('') || '<tr><td colspan="7" class="muted">Sin volúmenes con letra</td></tr>'}</table>
   </div>
+  <div class="panel"><h2>Uso y salud (SMART) <button id="bUsage" class="ghost" style="float:right;padding:3px 10px">⟳ Leer</button></h2><div id="usageBox">${usageHtml(st.smart[d.number])}</div></div>
   <div class="panel"><h2>Examen del disco</h2>
     <div class="steps">
       <label><input type="checkbox" id="sSmart" checked> SMART</label>
@@ -76,6 +100,8 @@ function renderDetail() {
     <div id="prog" class="hidden"><div class="pbar" id="pbar"><i id="pfill"></i></div><div id="pstat" class="muted"></div><pre id="plog" class="hidden"></pre></div>
   </div>
   <div id="resBox">${res ? resultHtml(res) : ''}</div>`;
+  $('#bUsage').onclick = () => !st.running && loadUsage(d.number);
+  if (!st.smart[d.number] && st.admin) loadUsage(d.number);
   $('#bStart').onclick = startExam;
   $('#bCancel').onclick = () => ndnl.cancelExam();
   bindResultButtons();
@@ -102,7 +128,7 @@ async function startExam() {
   st.running = false;
   document.querySelectorAll('.dcard').forEach(e => e.style.opacity = 1);
   if (!r.ok) { $('#bStart').disabled = false; $('#bCancel').classList.add('hidden'); $('#pstat').innerHTML = `<span class="bad">Error: ${esc(r.error)}</span>`; return; }
-  st.results[d.number] = r.result;
+  st.results[d.number] = r.result; if (r.result.smart) st.smart[d.number] = r.result.smart;
   await refresh(); // actualiza bit de suciedad / estado
   renderDetail();
 }

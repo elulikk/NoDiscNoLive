@@ -5,6 +5,7 @@ contextBridge.exposeInMainWorld('ndnl', {
   info: () => ipcRenderer.invoke('app:info'),
   listDisks: () => ipcRenderer.invoke('disks:list'),
   relaunchAdmin: () => ipcRenderer.invoke('app:relaunch-admin'),
+  readSmart: n => ipcRenderer.invoke('smart:read', n),
   startExam: opts => ipcRenderer.invoke('exam:start', opts),
   cancelExam: () => ipcRenderer.invoke('exam:cancel'),
   saveReport: diskNumber => ipcRenderer.invoke('report:save', { diskNumber }),

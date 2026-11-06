@@ -10,7 +10,7 @@ const { buildReportHtml } = require('./report');
 
 const ASSETS = path.join(__dirname, '..', '..', 'assets');
 const ICON = path.join(__dirname, '..', '..', 'build', 'icon.ico');
-const LOGO = path.join(ASSETS, 'mag-logo.png');
+const LOGO = path.join(ASSETS, 'logo.png');
 
 let mainWin = null, splash = null;
 let currentJob = null, cancelFlag = false;
@@ -39,6 +39,7 @@ function createMain() {
   mainWin.on('closed', () => { if (currentJob) currentJob.cancel(); mainWin = null; });
 }
 
+app.disableHardwareAcceleration(); // evita el destello/glitch gráfico (caídas del proceso GPU)
 const gotLock = app.requestSingleInstanceLock();
 if (!gotLock) app.quit();
 else {
@@ -147,6 +148,7 @@ ipcMain.handle('exam:start', async (_e, { diskNumber, steps, days = 60 }) => {
   } finally { currentJob = null; }
 });
 
+ipcMain.handle('smart:read', async (_e, n) => { try { return await win.readSmart(Number(n)); } catch (e) { return { available: false, error: e.message }; } });
 ipcMain.handle('exam:cancel', () => { cancelFlag = true; if (currentJob) currentJob.cancel(); return true; });
 
 // ------------------------------------------------------------------ informe PDF

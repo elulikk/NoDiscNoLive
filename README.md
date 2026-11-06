@@ -42,9 +42,9 @@ test/         pruebas del motor con datos simulados (node:test)
 scripts/      build.js
 ```
 
-## Logo de MAG
+## Icono y logo
 
-El logo se tomó de `C:\MAGSAPP\assets` (`magsapp.png` → `assets/mag-logo.png`; `magsapp.ico` → `build/icon.ico`). Si se dispone del logo corporativo definitivo, reemplace esos dos archivos (el `.ico` debe incluir 256×256) y vuelva a ejecutar `npm run build`.
+NoDiscNoLive tiene su **propio icono** (disco con pulso de diagnóstico), generado por `scripts/make-icon.py` (requiere Pillow) en `assets/logo.png` y `build/icon.ico`. No usa el logo de MAGSAPP. Para poner otro logo, reemplace esos dos archivos (el `.ico` debe incluir 256×256) y ejecute `npm run build`; la cabecera, el splash y el PDF usan `assets/logo.png`.
 
 ## Limitaciones
 

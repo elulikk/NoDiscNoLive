@@ -36,10 +36,11 @@ function buildReportHtml(r, logoDataUri) {
   const smartRows = smart && smart.available ? [
     ['Temperatura', smart.Temperature != null ? smart.Temperature + ' °C' : '—'],
     ['Desgaste (Wear)', smart.Wear != null ? smart.Wear + ' %' : '—'],
-    ['Horas encendido', smart.PowerOnHours ?? '—'],
+    ['Horas de uso', smart.PowerOnHours != null ? `${smart.PowerOnHours} h (${Math.floor(smart.PowerOnHours / 24)} días · ${(smart.PowerOnHours / 8760).toFixed(1)} años)` : '—'],
+    ['Ciclos de carga/descarga', smart.LoadUnloadCycleCount ?? '—'],
     ['Errores de lectura (total / sin corregir)', `${smart.ReadErrorsTotal ?? '—'} / ${smart.ReadErrorsUncorrected ?? '—'}`],
     ['Errores de escritura (total / sin corregir)', `${smart.WriteErrorsTotal ?? '—'} / ${smart.WriteErrorsUncorrected ?? '—'}`],
-    ['Ciclos de arranque/parada', smart.StartStopCycleCount ?? '—'],
+    ['Encendidos (ciclos start-stop)', smart.StartStopCycleCount ?? '—'],
   ] : [['Estado', esc(smart ? (smart.error || 'No disponible') : 'No examinado')]];
 
   const vols = (d.volumes || []).map(v => `<tr><td>${esc(v.letter)}:</td><td>${esc(v.label || '—')}</td><td>${esc(v.fs || '—')}</td><td>${fmtBytes(v.size)}</td><td>${fmtBytes(v.free)}</td><td>${esc(v.health || '—')}</td><td>${dirtyText(v.dirty)}</td></tr>`).join('') || '<tr><td colspan="7">Sin volúmenes con letra</td></tr>';

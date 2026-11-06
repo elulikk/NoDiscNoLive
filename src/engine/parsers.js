@@ -7,7 +7,7 @@ function parseDirty(raw) {
   const t = String(raw);
   if (/(acceso denegado|access is denied|privilegio|privilege|administrador|administrator)/i.test(t)) return 'noperm';
   if (/\bno\b[^\n]*(sucio|suciedad|dirty)|not dirty|\bis not\b/i.test(t)) return false;
-  if (/(sucio|suciedad|dirty)/i.test(t)) return true;
+  if (/(sucio|suciedad|dirty|contiene errores|contains errors)/i.test(t)) return true;
   return null;
 }
 

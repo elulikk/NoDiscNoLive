@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NoDiscNoLive</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="top">
+  <img src="../../assets/mag-logo.png" alt="MAG" class="logo">
+  <div class="brand">No<b>Disc</b>NoLive<span>Diagnóstico de discos</span></div>
+  <div class="grow"></div>
+  <span id="adminBadge" class="badge"></span>
+  <button id="btnAdmin" class="ghost hidden">Reiniciar como administrador</button>
+  <button id="btnTheme" class="ghost" title="Cambiar tema">◐ Tema</button>
+  <button id="btnRefresh" class="ghost">⟳ Actualizar</button>
+</header>
+<div id="banner" class="banner hidden"></div>
+<main>
+  <aside id="diskList"><div class="muted pad">Cargando discos…</div></aside>
+  <section id="detail"><div class="empty">Seleccione un disco de la lista.</div></section>
+</main>
+
+<div id="modal" class="modal hidden"><div class="card">
+  <h2>⚠ Reparar el volumen <select id="mVol"></select></h2>
+  <p><b>Antes de continuar: copie sus datos a otro disco.</b> chkdsk /f y /r modifican el sistema de archivos y, si el disco está fallando, pueden empeorar la pérdida de datos. /r además lee todo el disco y puede tardar horas.</p>
+  <label class="row"><input type="radio" name="mode" value="f" checked> <span><b>/f</b> corrige errores del sistema de archivos</span></label>
+  <label class="row"><input type="radio" name="mode" value="r"> <span><b>/r</b> /f + busca sectores defectuosos (lento)</span></label>
+  <label class="row"><input type="checkbox" id="mBackup"> <span>Ya copié mis datos importantes a otro disco.</span></label>
+  <p>Para confirmar, escriba <code id="mExpect"></code>:</p>
+  <input id="mText" autocomplete="off" spellcheck="false">
+  <div id="mProgress" class="hidden"><div class="pbar"><i id="mFill"></i></div><div id="mStatus" class="muted"></div><pre id="mLog"></pre></div>
+  <div class="actions"><button id="mCancel" class="ghost">Cancelar</button><button id="mGo" class="danger" disabled>Reparar</button></div>
+</div></div>
+
+<script src="app.js"></script>
+</body></html>

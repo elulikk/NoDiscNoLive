@@ -92,6 +92,7 @@ test('parseDirty en español e inglés', () => {
   assert.equal(parseDirty('El volumen - D: está sucio'), true);
   assert.equal(parseDirty('Volume - D: is NOT Dirty'), false);
   assert.equal(parseDirty('Volume - D: is Dirty'), true);
+  assert.equal(parseDirty('El volumen - D: contiene errores'), true);
   assert.equal(parseDirty('Error: Acceso denegado.'), 'noperm');
   assert.equal(parseDirty(''), null);
 });

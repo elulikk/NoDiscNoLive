@@ -10,7 +10,8 @@
   "scripts": {
     "start": "electron .",
     "test": "node --test test/*.test.js",
-    "build": "node scripts/build.js"
+    "build": "node scripts/build.js",
+    "shortcut": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/crear-acceso-directo.ps1"
   },
   "build": {
     "appId": "com.mag.nodiscnolive",

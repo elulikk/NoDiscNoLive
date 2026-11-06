@@ -26,6 +26,7 @@ Aplicación de escritorio para Windows (MAG) que examina discos y volúmenes y g
 npm install
 npm start          # ejecuta la app
 npm test           # pruebas del motor con datos simulados
+npm run shortcut   # crea el icono de acceso directo en el Escritorio
 npm run build      # pruebas + instalador NSIS y portable en dist/
 ```
 

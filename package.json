@@ -29,13 +29,16 @@
         "nsis",
         "portable"
       ],
-      "icon": "build/icon.ico",
-      "artifactName": "${productName}-${version}-${target}.${ext}"
+      "icon": "build/icon.ico"
     },
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
-      "perMachine": false
+      "perMachine": false,
+      "artifactName": "${productName}-Setup-${version}.${ext}"
+    },
+    "portable": {
+      "artifactName": "${productName}-${version}-portable.${ext}"
     }
   },
   "devDependencies": {
